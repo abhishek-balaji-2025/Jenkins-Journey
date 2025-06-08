@@ -19,9 +19,9 @@ pipeline {
                      }
                 }
           
-             stage ("bizarre") {
+             stage ("suggest a tip") {
                steps {
-                  echo "John's knee grows, friend seems disturbed"
+                  echo "Always keep yourself hydrated"
                      }
                 }
 
