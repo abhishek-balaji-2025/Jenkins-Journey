@@ -1,0 +1,86 @@
+Step 1: Install Java on Jenkins Agent (Slave 1)
+
+This step ensures that the agent node (your AWS EC2 instance) has Java installed so it can run the Jenkins agent (agent.jar).
+
+🔧 Commands to Run on Slave 1 (EC2 instance)
+
+SSH into the instance:
+ssh -i "your-key.pem" ubuntu@<EC2_PUBLIC_IP>
+
+Then install Java:
+sudo apt update
+sudo apt install openjdk-17-jdk -y
+
+Verify installation:
+java --version
+
+Expected output:
+openjdk version "17.x.x"
+...
+
+Step 2: Add SSH Credentials in Jenkins
+
+Go to Jenkins → Manage Jenkins → Credentials → Global → Add Credentials
+
+Choose “SSH Username with private key”
+
+Fill it out:
+
+Username: ubuntu (or your EC2 user)
+
+Private key: Choose “Enter directly” → Paste your .pem file contents
+
+ID (optional): ec2-agent-key
+
+Description: AWS EC2 Ubuntu Agent SSH Key
+
+Click Save
+
+Step 3: Create a New Node (Agent)
+
+Go to Jenkins → Manage Jenkins → Nodes → New Node
+
+Name the node (e.g., ec2-agent-01)
+
+Select Permanent Agent, then click OK
+
+Fill in the agent config:
+
+Description: (optional)
+
+# of Executors: 1 or more depending on CPU
+
+Remote root directory: /home/ubuntu/jenkins
+
+Labels: e.g., aws ubuntu ec2 java17
+
+Usage: "Use this node as much as possible"
+
+Launch method: Launch agents via SSH
+
+Host: <EC2_PUBLIC_IP> or DNS
+
+Credentials: Choose the SSH key you just added
+
+Host Key Verification: Choose “Non verifying” (for testing only) or set up proper key verification
+
+Click Save
+
+Step 4: Launch the Agent
+
+Click on the node in the Nodes list
+
+Click “Launch agent” or wait a few seconds
+
+Jenkins will:
+
+SSH into the EC2 instance
+
+Copy agent.jar
+
+Start the agent
+
+You should see:
+Agent successfully connected and online
+
+The ❌ red X will be gone, and the agent icon will turn green/online.
